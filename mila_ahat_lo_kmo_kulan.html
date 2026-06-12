@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מילה אחת לא כמו כולן</title>
+<style>
+body{font-family:Arial,sans-serif;background:#eef5fb;margin:0;padding:20px}
+.container{max-width:900px;margin:auto}
+h1{text-align:center;color:#167ac6}
+.question{background:white;border-radius:16px;padding:20px;margin:18px 0;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:12px}
+.btn{border:none;border-radius:14px;padding:16px;font-size:24px;color:white;cursor:pointer}
+.c1{background:#1e88e5}.c2{background:#7cb342}.c3{background:#42a5f5}.c4{background:#8bc34a}
+.correct{outline:5px solid #2e7d32}
+.wrong{outline:5px solid #c62828}
+.feedback{font-weight:bold;margin-top:10px;font-size:20px}
+#score{position:sticky;top:0;background:#167ac6;color:white;padding:10px;border-radius:10px;text-align:center}
+.restart{display:block;margin:20px auto;padding:12px 24px;font-size:18px}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>מילה אחת לא כמו כולן</h1>
+<div id="score">0 / 9</div>
+<div id="quiz"></div>
+<button class="restart" onclick="location.reload()">התחל מחדש</button>
+</div>
+<script>
+const praise=["כל הכבוד!","מצוין!","נהדר!","אלופה!","מעולה!","יופי!","הצלחת!"];
+const qs=[
+{a:["טוב","יפה","מצוין","משעמם"],c:"משעמם"},
+{a:["יום","שנה","שבוע","חדש"],c:"חדש"},
+{a:["שם","מחר","אתמול","היום"],c:"שם"},
+{a:["פה","שמים","אדמה","ים"],c:"פה"},
+{a:["מה קרה?","מה נשמע?","מה העניינים?","מה זה?"],c:"מה זה?"},
+{a:["יום הולדת","חג","תשובה","שבת"],c:"תשובה"},
+{a:["בוקר","אתמול","לילה","ערב"],c:"אתמול"},
+{a:["יודע","חושב","אוכל","מבין"],c:"אוכל"},
+{a:["הולך","נוסע","בא","אוהב"],c:"אוהב"}
+];
+let score=0;
+const quiz=document.getElementById('quiz');
+qs.forEach((q,i)=>{
+ const div=document.createElement('div');
+ div.className='question';
+ div.innerHTML=`<h3>שאלה ${i+1}</h3><div class="options"></div><div class="feedback"></div>`;
+ const opt=div.querySelector('.options');
+ const fb=div.querySelector('.feedback');
+ q.a.forEach((w,j)=>{
+   const b=document.createElement('button');
+   b.className='btn c'+((j%4)+1);
+   b.textContent=w;
+   b.onclick=()=>{
+      if(div.dataset.done) return;
+      div.dataset.done=1;
+      if(w===q.c){
+         b.classList.add('correct');
+         fb.textContent=praise[Math.floor(Math.random()*praise.length)];
+         fb.style.color='#2e7d32';
+         score++;
+      }else{
+         b.classList.add('wrong');
+         [...opt.children].find(x=>x.textContent===q.c).classList.add('correct');
+         fb.textContent='נסו שוב בפעם הבאה 🙂';
+         fb.style.color='#c62828';
+      }
+      document.getElementById('score').textContent=`${score} / ${qs.length}`;
+   };
+   opt.appendChild(b);
+ });
+ quiz.appendChild(div);
+});
+</script>
+</body>
+</html>
